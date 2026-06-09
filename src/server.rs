@@ -13,12 +13,9 @@
 use crate::bridge::Bridge;
 use crate::cli::Posture;
 use rmcp::{
-    ErrorData as McpError, RoleServer, ServerHandler,
-    handler::server::router::tool::ToolRouter,
-    handler::server::wrapper::Parameters,
-    model::*,
-    service::RequestContext,
-    tool, tool_handler, tool_router,
+    ErrorData as McpError, RoleServer, ServerHandler, handler::server::router::tool::ToolRouter,
+    handler::server::wrapper::Parameters, model::*, service::RequestContext, tool, tool_handler,
+    tool_router,
 };
 use schemars::JsonSchema;
 use serde::Deserialize;
@@ -314,7 +311,9 @@ impl BwocMcp {
         self.json_tool(&["new", &name]).await
     }
 
-    #[tool(description = "Retire an agent (remove from registry + files). Requires --allow-dangerous.")]
+    #[tool(
+        description = "Retire an agent (remove from registry + files). Requires --allow-dangerous."
+    )]
     async fn bwoc_retire(
         &self,
         Parameters(NameArg { name }): Parameters<NameArg>,
@@ -505,7 +504,10 @@ impl ServerHandler for BwocMcp {
                     .get("agent")
                     .and_then(|v| v.as_str())
                     .unwrap_or("<agent>");
-                let task = args.get("task").and_then(|v| v.as_str()).unwrap_or("<task>");
+                let task = args
+                    .get("task")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("<task>");
                 vec![PromptMessage::new_text(
                     PromptMessageRole::User,
                     format!(

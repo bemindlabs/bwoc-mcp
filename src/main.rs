@@ -45,9 +45,7 @@ async fn main() -> anyhow::Result<()> {
             }
             #[cfg(not(feature = "http"))]
             {
-                anyhow::bail!(
-                    "the `http` transport requires building with `--features http`"
-                );
+                anyhow::bail!("the `http` transport requires building with `--features http`");
             }
         }
     }

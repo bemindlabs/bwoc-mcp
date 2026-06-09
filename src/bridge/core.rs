@@ -33,7 +33,8 @@ impl Bridge {
     /// subprocess. The exact on-disk path is resolved by the build-out; this
     /// helper takes the raw JSONL so it stays a pure, testable seam.
     pub fn parse_team_tasks(&self, jsonl: &str) -> Result<serde_json::Value, CoreError> {
-        let tasks = bwoc_core::team::parse_tasks(jsonl).map_err(|e| CoreError::Team(e.to_string()))?;
+        let tasks =
+            bwoc_core::team::parse_tasks(jsonl).map_err(|e| CoreError::Team(e.to_string()))?;
         Ok(serde_json::to_value(tasks)?)
     }
 }

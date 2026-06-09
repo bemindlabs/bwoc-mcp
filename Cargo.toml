@@ -27,9 +27,11 @@ rmcp = { version = "1.7", features = ["server", "macros", "transport-io"] }
 
 # Hybrid bridge — link bwoc-core for the primitives it already exposes
 # (manifest, workspace registry, team/task TOML, routing/inbox, deep_memory).
-# Path dep for local dev against the sibling framework checkout; pin to a git
-# tag for release (see docs/PLAN.md §Versioning).
-bwoc-core = { path = "../bwoc-framework/crates/bwoc-core" }
+# Pinned to a published framework tag so the repo builds standalone (CI, fresh
+# clone) — NOT a sibling path dep, which only resolves on a dev box that also
+# checked out the framework. To develop against a local framework working tree,
+# add a [patch] override (see the commented block at the bottom of this file).
+bwoc-core = { git = "https://github.com/bemindlabs/BWOC-Framework.git", tag = "v2026.6.9-0" }
 
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "process", "io-std", "signal"] }
 serde = { version = "1", features = ["derive"] }
@@ -47,3 +49,7 @@ tokio-util = { version = "0.7", optional = true }
 
 [dev-dependencies]
 tempfile = "3"
+
+# Local development against a framework working tree (uncomment + adjust path):
+# [patch."https://github.com/bemindlabs/BWOC-Framework.git"]
+# bwoc-core = { path = "../bwoc-framework/crates/bwoc-core" }

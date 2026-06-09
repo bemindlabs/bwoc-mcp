@@ -26,9 +26,7 @@ pub async fn serve(args: Cli, bridge: Bridge, posture: Posture) -> anyhow::Resul
         );
     }
     if args.http_token.is_none() && mutating {
-        anyhow::bail!(
-            "refusing to serve write/exec tools over HTTP without --http-token"
-        );
+        anyhow::bail!("refusing to serve write/exec tools over HTTP without --http-token");
     }
 
     let token = args.http_token.clone();
@@ -40,10 +38,12 @@ pub async fn serve(args: Cli, bridge: Bridge, posture: Posture) -> anyhow::Resul
 
     let app = axum::Router::new()
         .nest_service("/mcp", mcp)
-        .layer(axum::middleware::from_fn(move |headers: HeaderMap, req, next| {
-            let token = token.clone();
-            async move { auth_gate(token, headers, req, next).await }
-        }));
+        .layer(axum::middleware::from_fn(
+            move |headers: HeaderMap, req, next| {
+                let token = token.clone();
+                async move { auth_gate(token, headers, req, next).await }
+            },
+        ));
 
     let listener = tokio::net::TcpListener::bind(&args.http_addr).await?;
     tracing::info!(addr = %args.http_addr, "bwoc-mcp HTTP listening on /mcp");

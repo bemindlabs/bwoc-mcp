@@ -4,6 +4,10 @@
 //! path (so no real workspace/LLM is needed), drives it with newline-delimited
 //! JSON-RPC over stdio, and asserts the MCP handshake, the read path, and a
 //! posture gate refusal.
+//!
+//! Unix-only: the stub `bwoc` is a POSIX `/bin/sh` script. On Windows the build
+//! is still verified by CI; these behavioural tests just compile to nothing.
+#![cfg(unix)]
 
 use std::io::{BufRead, BufReader, Write};
 use std::process::{Command, Stdio};
@@ -76,7 +80,8 @@ const INIT: &str = r#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"p
 const INITED: &str = r#"{"jsonrpc":"2.0","method":"notifications/initialized"}"#;
 
 fn by_id(msgs: &[serde_json::Value], id: i64) -> Option<&serde_json::Value> {
-    msgs.iter().find(|m| m.get("id").and_then(|v| v.as_i64()) == Some(id))
+    msgs.iter()
+        .find(|m| m.get("id").and_then(|v| v.as_i64()) == Some(id))
 }
 
 #[test]
@@ -107,7 +112,11 @@ fn tools_list_exposes_full_catalog() {
     ] {
         assert!(names.contains(&expected), "missing tool {expected}");
     }
-    assert!(names.len() >= 20, "expected the full catalog, got {}", names.len());
+    assert!(
+        names.len() >= 20,
+        "expected the full catalog, got {}",
+        names.len()
+    );
 }
 
 #[test]
@@ -116,7 +125,10 @@ fn read_tool_is_ungated_and_returns_data() {
     let msgs = drive(&[], &[INIT, INITED, call]);
     let res = by_id(&msgs, 3).unwrap();
     let text = res["result"]["content"][0]["text"].as_str().unwrap();
-    assert!(text.contains("agent-test"), "stub list output not surfaced: {text}");
+    assert!(
+        text.contains("agent-test"),
+        "stub list output not surfaced: {text}"
+    );
 }
 
 #[test]
@@ -124,10 +136,15 @@ fn write_tool_is_refused_without_allow_write() {
     let call = r#"{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"bwoc_send","arguments":{"agent":"x","message":"hi"}}}"#;
     let msgs = drive(&[], &[INIT, INITED, call]);
     let res = by_id(&msgs, 4).unwrap();
-    let err = res.get("error").or_else(|| res["result"].get("isError").map(|_| &res["result"]));
+    let err = res
+        .get("error")
+        .or_else(|| res["result"].get("isError").map(|_| &res["result"]));
     assert!(err.is_some(), "expected refusal, got {res}");
     let blob = res.to_string();
-    assert!(blob.contains("--allow-write"), "refusal should name the flag: {blob}");
+    assert!(
+        blob.contains("--allow-write"),
+        "refusal should name the flag: {blob}"
+    );
 }
 
 #[test]
@@ -150,7 +167,10 @@ fn delegate_prompt_interpolates_args() {
     let text = by_id(&msgs, 7).unwrap()["result"]["messages"][0]["content"]["text"]
         .as_str()
         .unwrap();
-    assert!(text.contains("yudi") && text.contains("audit X"), "got {text}");
+    assert!(
+        text.contains("yudi") && text.contains("audit X"),
+        "got {text}"
+    );
 }
 
 #[test]
@@ -159,5 +179,8 @@ fn write_tool_runs_with_allow_write() {
     let msgs = drive(&["--allow-write"], &[INIT, INITED, call]);
     let res = by_id(&msgs, 5).unwrap();
     let text = res["result"]["content"][0]["text"].as_str().unwrap_or("");
-    assert!(text.contains("sent to yudi"), "stub send output not surfaced: {res}");
+    assert!(
+        text.contains("sent to yudi"),
+        "stub send output not surfaced: {res}"
+    );
 }

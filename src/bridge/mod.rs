@@ -26,6 +26,9 @@ pub struct Bridge {
 
 impl Bridge {
     pub fn new(workspace: PathBuf, bwoc_bin: String) -> Self {
-        Self { workspace, bwoc_bin }
+        Self {
+            workspace,
+            bwoc_bin,
+        }
     }
 }
