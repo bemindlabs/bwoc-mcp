@@ -8,7 +8,7 @@
   <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg">
   <img alt="Rust" src="https://img.shields.io/badge/built%20with-Rust-dea584">
   <img alt="MCP" src="https://img.shields.io/badge/protocol-MCP-1f6feb">
-  <img alt="Status" src="https://img.shields.io/badge/status-WIP-orange">
+  <img alt="Release" src="https://img.shields.io/badge/release-v1.0.0-brightgreen">
   <img alt="Part of BWOC" src="https://img.shields.io/badge/part%20of-BWOC-6f42c1">
 </p>
 
@@ -72,12 +72,11 @@ bwoc-mcp --transport http --http-addr 127.0.0.1:8765 --http-token "$BWOC_MCP_TOK
 
 ## Status
 
-**WIP — feature-complete core.** Both transports (**stdio** + **Streamable
-HTTP** with bearer auth), the **full 24-tool catalog** (read open; write / exec
-/ lifecycle gated), and MCP **resources** (`bwoc://agents|fleet|info`) +
-**prompts** (`delegate`, `fleet_review`) are wired and tested (7 integration
-tests, clippy clean). Remaining: CI, release artifacts, Homebrew formula — see
-[`docs/PLAN.md`](docs/PLAN.md).
+**v1.0.0.** Both transports (**stdio** + **Streamable HTTP** with bearer auth),
+the **full 24-tool catalog** (read open; write / exec / lifecycle gated), and
+MCP **resources** (`bwoc://agents|fleet|info`) + **prompts** (`delegate`,
+`fleet_review`) are shipped and tested (7 integration tests, clippy clean). See
+the [changelog](CHANGELOG.md) and [`docs/PLAN.md`](docs/PLAN.md).
 
 ## License
 
