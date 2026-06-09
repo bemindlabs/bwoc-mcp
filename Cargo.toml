@@ -1,0 +1,49 @@
+[package]
+name = "bwoc-mcp"
+description = "Public MCP server for BWOC — exposes a BWOC agent workspace (agents, teams, tasks, memory, run/send/fleet) to any Model Context Protocol client over stdio or Streamable HTTP."
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+repository = "https://github.com/bemindlabs/bwoc-mcp"
+readme = "README.md"
+
+[[bin]]
+name = "bwoc-mcp"
+path = "src/main.rs"
+
+[features]
+# stdio works out of the box. `http` pulls in the Streamable HTTP transport +
+# axum so the default build (and `cargo check`) stays lean and the network
+# surface is opt-in at compile time as well as runtime.
+default = []
+http = ["rmcp/transport-streamable-http-server", "rmcp/auth", "dep:axum", "dep:tokio-util"]
+
+[dependencies]
+# Official Rust MCP SDK. This repo is OUTSIDE the bwoc-framework workspace, so
+# the framework's dep-quarantine (bwoc-core stays dependency-light) does not
+# bind here — rmcp/tokio/axum live only in this adapter.
+rmcp = { version = "1.7", features = ["server", "macros", "transport-io"] }
+
+# Hybrid bridge — link bwoc-core for the primitives it already exposes
+# (manifest, workspace registry, team/task TOML, routing/inbox, deep_memory).
+# Path dep for local dev against the sibling framework checkout; pin to a git
+# tag for release (see docs/PLAN.md §Versioning).
+bwoc-core = { path = "../bwoc-framework/crates/bwoc-core" }
+
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "process", "io-std", "signal"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+schemars = "1"
+anyhow = "1"
+thiserror = "2"
+clap = { version = "4.5", features = ["derive", "env"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# http feature only
+axum = { version = "0.8", optional = true }
+tokio-util = { version = "0.7", optional = true }
+
+[dev-dependencies]
+tempfile = "3"
