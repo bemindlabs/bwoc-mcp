@@ -4,6 +4,23 @@ All notable changes to `bwoc-mcp` are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-06-09
+
+### Fixed
+
+- `bwoc-core` is now a git dependency pinned to BWOC-Framework `v2026.6.9-0`
+  instead of a sibling path dependency, so the crate builds from a fresh clone
+  and via `cargo install --git` (v1.0.0 only built on a box that also checked
+  out the framework).
+
+### Added
+
+- GitHub Actions **CI quality gate** — rustfmt + clippy, then build + test on
+  Linux, macOS, and Windows for every push to `main` and pull request.
+- GitHub Actions **release pipeline** — on a `v*` tag, build release binaries
+  (linux x86_64/aarch64, macOS arm64/x86_64, windows x86_64) and attach them to
+  the GitHub release.
+
 ## [1.0.0] - 2026-06-09
 
 First public release — a Model Context Protocol server that exposes a BWOC
@@ -33,4 +50,5 @@ workspace to any MCP client.
 - team/task tools route through shell-out (`bwoc task … --json`) by design, to
   keep this public adapter decoupled from the framework's on-disk layout.
 
+[1.0.1]: https://github.com/bemindlabs/bwoc-mcp/releases/tag/v1.0.1
 [1.0.0]: https://github.com/bemindlabs/bwoc-mcp/releases/tag/v1.0.0
