@@ -8,7 +8,8 @@
   <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg">
   <img alt="Rust" src="https://img.shields.io/badge/built%20with-Rust-dea584">
   <img alt="MCP" src="https://img.shields.io/badge/protocol-MCP-1f6feb">
-  <img alt="Release" src="https://img.shields.io/badge/release-v1.0.0-brightgreen">
+  <img alt="Release" src="https://img.shields.io/badge/release-v1.0.1-brightgreen">
+  <img alt="CI" src="https://github.com/bemindlabs/bwoc-mcp/actions/workflows/ci.yml/badge.svg">
   <img alt="Part of BWOC" src="https://img.shields.io/badge/part%20of-BWOC-6f42c1">
 </p>
 
@@ -72,7 +73,7 @@ bwoc-mcp --transport http --http-addr 127.0.0.1:8765 --http-token "$BWOC_MCP_TOK
 
 ## Status
 
-**v1.0.0.** Both transports (**stdio** + **Streamable HTTP** with bearer auth),
+**v1.0.1.** Both transports (**stdio** + **Streamable HTTP** with bearer auth),
 the **full 24-tool catalog** (read open; write / exec / lifecycle gated), and
 MCP **resources** (`bwoc://agents|fleet|info`) + **prompts** (`delegate`,
 `fleet_review`) are shipped and tested (7 integration tests, clippy clean). See
