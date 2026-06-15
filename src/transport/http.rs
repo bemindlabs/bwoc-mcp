@@ -11,9 +11,9 @@
 use crate::bridge::Bridge;
 use crate::cli::{Cli, Posture};
 use crate::server::BwocMcp;
-use axum::http::{header::HOST, HeaderMap, HeaderValue, StatusCode};
+use axum::http::{HeaderMap, HeaderValue, StatusCode, header::HOST};
 use rmcp::transport::streamable_http_server::{
-    session::local::LocalSessionManager, StreamableHttpService,
+    StreamableHttpService, session::local::LocalSessionManager,
 };
 use std::sync::Arc;
 
