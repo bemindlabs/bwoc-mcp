@@ -11,9 +11,9 @@
 use crate::bridge::Bridge;
 use crate::cli::{Cli, Posture};
 use crate::server::BwocMcp;
-use axum::http::{HeaderMap, StatusCode};
+use axum::http::{header::HOST, HeaderMap, HeaderValue, StatusCode};
 use rmcp::transport::streamable_http_server::{
-    StreamableHttpService, session::local::LocalSessionManager,
+    session::local::LocalSessionManager, StreamableHttpService,
 };
 use std::sync::Arc;
 
@@ -42,6 +42,16 @@ pub async fn serve(args: Cli, bridge: Bridge, posture: Posture) -> anyhow::Resul
             move |headers: HeaderMap, req, next| {
                 let token = token.clone();
                 async move { auth_gate(token, headers, req, next).await }
+            },
+        ))
+        // Normalize Host → localhost so rmcp's DNS-rebinding guard accepts requests
+        // when bound to a docker-bridge IP (e.g. 172.17.0.1) for container access.
+        // Safe here: the real auth is the bearer token above + a non-LAN bind.
+        .layer(axum::middleware::from_fn(
+            |mut req: axum::extract::Request, next: axum::middleware::Next| async move {
+                req.headers_mut()
+                    .insert(HOST, HeaderValue::from_static("localhost"));
+                next.run(req).await
             },
         ));
 
