@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **MCP tool annotations on every tool.** All 24 tools now declare the standard MCP behavior hints so a host (Claude Desktop, etc.) can show users which are safe vs mutating: the 13 read tools are `readOnlyHint: true`; writes are `readOnlyHint: false`; `run` (spawns an agent backend) adds `openWorldHint: true`; and the 4 lifecycle tools (`new`/`retire`/`start`/`stop`) add `destructiveHint: true`. Also the headline annotation that the Anthropic Connectors Directory requires.
 - **One-click Claude Desktop extension (`.mcpb`).** New `mcpb/manifest.json` (MCP Bundle, `manifest_version` 0.3) + `scripts/build-mcpb.sh` package the compiled server as a desktop extension — double-click `bwoc-mcp.mcpb` and Claude Desktop installs it, prompting only for the workspace directory (read-only by default). Binary server with per-platform overrides (macOS universal / Linux x64 / Windows x64). The release workflow now builds + attaches `bwoc-mcp.mcpb` on each tag (macOS binaries `lipo`'d to universal2). Verified with `@anthropic-ai/mcpb validate`/`pack`.
 
 ## [1.0.1] - 2026-06-09
