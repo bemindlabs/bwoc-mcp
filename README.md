@@ -52,7 +52,15 @@ cargo build --release
 ./target/release/bwoc-mcp --workspace . --allow-write --allow-exec
 ```
 
-Claude Desktop (`claude_desktop_config.json`):
+### Claude Desktop — one-click (`.mcpb`)
+
+The easiest path. Download `bwoc-mcp.mcpb` from the [latest release](https://github.com/bemindlabs/bwoc-mcp/releases/latest) (or build it: `./scripts/build-mcpb.sh`) and **double-click it** — Claude Desktop installs the bundled server and asks only for your **workspace directory**. It runs **read-only** by default.
+
+`.mcpb` is the [MCP Bundle](https://github.com/anthropics/mcpb) format (one-click local MCP servers for desktop apps). The bundle ships the compiled `bwoc-mcp` binary, so there's nothing to compile and no config file to hand-edit.
+
+### Claude Desktop — manual (`claude_desktop_config.json`)
+
+Or wire it by hand (and the only way to enable the write/exec tiers today — add the `--allow-*` flags to `args`):
 
 ```jsonc
 {

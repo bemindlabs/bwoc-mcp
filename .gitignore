@@ -4,3 +4,7 @@ Cargo.lock.bak
 .DS_Store
 *.log
 .env
+
+# MCPB desktop-extension build artifacts (staged binaries + packed bundle)
+mcpb/server/
+*.mcpb
