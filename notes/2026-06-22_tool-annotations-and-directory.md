@@ -20,8 +20,8 @@ marketplace / directory, and can the bundle be signed?"
 ## Why (the directory research)
 
 The **Anthropic Connectors Directory** (claude.ai) lists **remote/hosted** MCP
-servers and gates on: a public **privacy policy** (missing = auto-reject), **per-
-tool annotations** (`readOnlyHint`/`destructiveHint` + title), an OAuth callback
+servers and gates on: a public **privacy policy** (missing = auto-reject),
+**per-tool annotations** (`readOnlyHint`/`destructiveHint` + title), an OAuth callback
 (`claude.ai/api/mcp/auth_callback`), test-account access, and a Team/Enterprise
 org to submit from. `bwoc-mcp` is a **local-workspace** tool — the right
 distribution channel is the **`.mcpb` desktop extension** (already shipped), not
