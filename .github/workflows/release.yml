@@ -64,3 +64,46 @@ jobs:
         with:
           files: ${{ env.ASSET }}
           fail_on_unmatched_files: true
+
+      # Raw binary for the .mcpb desktop-extension pack job (below).
+      - name: Upload raw binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bin-${{ matrix.target }}
+          path: target/${{ matrix.target }}/release/bwoc-mcp${{ runner.os == 'Windows' && '.exe' || '' }}
+          if-no-files-found: error
+
+  # Build the one-click Claude Desktop extension (bwoc-mcp.mcpb) covering
+  # macOS (universal), Windows x64, and Linux x64, and attach it to the release.
+  # aarch64-linux is not in the single bundle (MCPB keys on platform, not arch) —
+  # those users build from source or use the tarball.
+  pack-mcpb:
+    name: pack .mcpb
+    needs: build
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Stage server binaries
+        run: |
+          set -euo pipefail
+          mkdir -p mcpb/server
+          # macOS universal (aarch64 + x86_64 → universal2).
+          lipo -create -output mcpb/server/bwoc-mcp-darwin \
+            artifacts/bin-aarch64-apple-darwin/bwoc-mcp \
+            artifacts/bin-x86_64-apple-darwin/bwoc-mcp
+          chmod +x mcpb/server/bwoc-mcp-darwin
+          cp artifacts/bin-x86_64-unknown-linux-gnu/bwoc-mcp mcpb/server/bwoc-mcp-linux
+          chmod +x mcpb/server/bwoc-mcp-linux
+          cp artifacts/bin-x86_64-pc-windows-msvc/bwoc-mcp.exe mcpb/server/bwoc-mcp-win32.exe
+      - name: Validate + pack
+        run: |
+          npx -y @anthropic-ai/mcpb@latest validate mcpb/manifest.json
+          npx -y @anthropic-ai/mcpb@latest pack mcpb bwoc-mcp.mcpb
+      - name: Attach .mcpb to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: bwoc-mcp.mcpb
+          fail_on_unmatched_files: true

@@ -1,0 +1,42 @@
+{
+  "manifest_version": "0.3",
+  "name": "bwoc-mcp",
+  "display_name": "BWOC — Agent Fleet",
+  "version": "1.0.1",
+  "description": "Expose a BWOC agent workspace (agents, teams, tasks, memory, fleet) to Claude Desktop over MCP — read-only by default.",
+  "long_description": "BWOC-MCP is a local Model Context Protocol server that surfaces a BWOC agent workspace to Claude Desktop: list agents and fleet status, read teams/tasks/memory/inbox, and (when you opt in) send messages, manage tasks, and run agents. This bundle installs the server with one click and asks only for your workspace directory. It runs read-only by default; mutating/exec tools require explicit flags (see the project README).",
+  "author": {
+    "name": "BeMind Labs",
+    "url": "https://github.com/bemindlabs"
+  },
+  "homepage": "https://github.com/bemindlabs/bwoc-mcp",
+  "documentation": "https://github.com/bemindlabs/bwoc-mcp#readme",
+  "license": "MIT",
+  "keywords": ["bwoc", "agents", "fleet", "mcp", "buddhist-way-of-coding"],
+  "server": {
+    "type": "binary",
+    "entry_point": "server/bwoc-mcp-darwin",
+    "mcp_config": {
+      "command": "server/bwoc-mcp-darwin",
+      "args": ["--workspace", "${user_config.workspace}"],
+      "env": {},
+      "platform_overrides": {
+        "darwin": { "command": "server/bwoc-mcp-darwin" },
+        "linux": { "command": "server/bwoc-mcp-linux" },
+        "win32": { "command": "server/bwoc-mcp-win32.exe" }
+      }
+    }
+  },
+  "user_config": {
+    "workspace": {
+      "type": "directory",
+      "title": "BWOC workspace",
+      "description": "The directory that contains your .bwoc/ workspace (agents, teams, tasks, memory). The server exposes exactly this one workspace.",
+      "required": true,
+      "default": "${HOME}"
+    }
+  },
+  "compatibility": {
+    "platforms": ["darwin", "linux", "win32"]
+  }
+}

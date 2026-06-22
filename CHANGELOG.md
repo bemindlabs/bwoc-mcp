@@ -4,6 +4,12 @@ All notable changes to `bwoc-mcp` are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **One-click Claude Desktop extension (`.mcpb`).** New `mcpb/manifest.json` (MCP Bundle, `manifest_version` 0.3) + `scripts/build-mcpb.sh` package the compiled server as a desktop extension — double-click `bwoc-mcp.mcpb` and Claude Desktop installs it, prompting only for the workspace directory (read-only by default). Binary server with per-platform overrides (macOS universal / Linux x64 / Windows x64). The release workflow now builds + attaches `bwoc-mcp.mcpb` on each tag (macOS binaries `lipo`'d to universal2). Verified with `@anthropic-ai/mcpb validate`/`pack`.
+
 ## [1.0.1] - 2026-06-09
 
 ### Fixed
