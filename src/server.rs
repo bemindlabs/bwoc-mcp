@@ -133,7 +133,10 @@ impl BwocMcp {
     // ====================== READ (always available) ======================
 
     /// Liveness check — returns the targeted workspace path. In-process.
-    #[tool(description = "Ping the BWOC MCP server; returns the active workspace path.")]
+    #[tool(
+        description = "Ping the BWOC MCP server; returns the active workspace path.",
+        annotations(read_only_hint = true)
+    )]
     async fn bwoc_ping(&self) -> Result<CallToolResult, McpError> {
         Ok(CallToolResult::success(vec![Content::text(format!(
             "pong: {}",
@@ -141,12 +144,18 @@ impl BwocMcp {
         ))]))
     }
 
-    #[tool(description = "List the agents registered in the workspace (id, status, role).")]
+    #[tool(
+        description = "List the agents registered in the workspace (id, status, role).",
+        annotations(read_only_hint = true)
+    )]
     async fn bwoc_list(&self) -> Result<CallToolResult, McpError> {
         self.json_tool(&["list"]).await
     }
 
-    #[tool(description = "Show health and identity for one agent.")]
+    #[tool(
+        description = "Show health and identity for one agent.",
+        annotations(read_only_hint = true)
+    )]
     async fn bwoc_status(
         &self,
         Parameters(AgentArg { agent }): Parameters<AgentArg>,
@@ -154,22 +163,34 @@ impl BwocMcp {
         self.json_tool(&["status", &agent]).await
     }
 
-    #[tool(description = "One-card system status: version, release, phase, workspace + agents.")]
+    #[tool(
+        description = "One-card system status: version, release, phase, workspace + agents.",
+        annotations(read_only_hint = true)
+    )]
     async fn bwoc_info(&self) -> Result<CallToolResult, McpError> {
         self.json_tool(&["info"]).await
     }
 
-    #[tool(description = "Report fleet-wide Aparihāniya-dhamma 7 health signals.")]
+    #[tool(
+        description = "Report fleet-wide Aparihāniya-dhamma 7 health signals.",
+        annotations(read_only_hint = true)
+    )]
     async fn bwoc_fleet(&self) -> Result<CallToolResult, McpError> {
         self.json_tool(&["fleet"]).await
     }
 
-    #[tool(description = "List running agent sessions detected via markers + process scan.")]
+    #[tool(
+        description = "List running agent sessions detected via markers + process scan.",
+        annotations(read_only_hint = true)
+    )]
     async fn bwoc_sessions(&self) -> Result<CallToolResult, McpError> {
         self.json_tool(&["sessions"]).await
     }
 
-    #[tool(description = "Read an agent's Kalyāṇamitta-7 trust profile (declared + required).")]
+    #[tool(
+        description = "Read an agent's Kalyāṇamitta-7 trust profile (declared + required).",
+        annotations(read_only_hint = true)
+    )]
     async fn bwoc_trust(
         &self,
         Parameters(AgentArg { agent }): Parameters<AgentArg>,
@@ -177,13 +198,19 @@ impl BwocMcp {
         self.json_tool(&["trust", &agent]).await
     }
 
-    #[tool(description = "List teams in the workspace with member + task counts.")]
+    #[tool(
+        description = "List teams in the workspace with member + task counts.",
+        annotations(read_only_hint = true)
+    )]
     async fn bwoc_team_list(&self) -> Result<CallToolResult, McpError> {
         // `team list` has no --json twin; return its text layout.
         self.text_tool(&["team", "list"]).await
     }
 
-    #[tool(description = "List a team's shared tasks with state + claimant.")]
+    #[tool(
+        description = "List a team's shared tasks with state + claimant.",
+        annotations(read_only_hint = true)
+    )]
     async fn bwoc_task_list(
         &self,
         Parameters(TeamArg { team }): Parameters<TeamArg>,
@@ -191,7 +218,10 @@ impl BwocMcp {
         self.json_tool(&["task", "list", &team]).await
     }
 
-    #[tool(description = "Read an agent's inbox messages.")]
+    #[tool(
+        description = "Read an agent's inbox messages.",
+        annotations(read_only_hint = true)
+    )]
     async fn bwoc_inbox_read(
         &self,
         Parameters(InboxArgs { agent, limit }): Parameters<InboxArgs>,
@@ -204,12 +234,18 @@ impl BwocMcp {
         self.json_owned(args).await
     }
 
-    #[tool(description = "List user-authored workspace memory entries.")]
+    #[tool(
+        description = "List user-authored workspace memory entries.",
+        annotations(read_only_hint = true)
+    )]
     async fn bwoc_memory_list(&self) -> Result<CallToolResult, McpError> {
         self.text_tool(&["memory", "list"]).await
     }
 
-    #[tool(description = "Print one workspace memory entry's contents.")]
+    #[tool(
+        description = "Print one workspace memory entry's contents.",
+        annotations(read_only_hint = true)
+    )]
     async fn bwoc_memory_show(
         &self,
         Parameters(MemoryShowArgs { name }): Parameters<MemoryShowArgs>,
@@ -217,14 +253,20 @@ impl BwocMcp {
         self.text_tool(&["memory", "show", &name]).await
     }
 
-    #[tool(description = "List peers declared in this workspace's routes.toml.")]
+    #[tool(
+        description = "List peers declared in this workspace's routes.toml.",
+        annotations(read_only_hint = true)
+    )]
     async fn bwoc_peer_list(&self) -> Result<CallToolResult, McpError> {
         self.text_tool(&["peer", "list"]).await
     }
 
     // ====================== WRITE (--allow-write) ======================
 
-    #[tool(description = "Send a message to an agent's inbox. Requires --allow-write.")]
+    #[tool(
+        description = "Send a message to an agent's inbox. Requires --allow-write.",
+        annotations(read_only_hint = false)
+    )]
     async fn bwoc_send(
         &self,
         Parameters(SendArgs { agent, message }): Parameters<SendArgs>,
@@ -233,7 +275,10 @@ impl BwocMcp {
         self.text_tool(&["send", &agent, &message]).await
     }
 
-    #[tool(description = "Add a task to a team's shared list. Requires --allow-write.")]
+    #[tool(
+        description = "Add a task to a team's shared list. Requires --allow-write.",
+        annotations(read_only_hint = false)
+    )]
     async fn bwoc_task_add(
         &self,
         Parameters(TaskAddArgs { team, title, deps }): Parameters<TaskAddArgs>,
@@ -247,7 +292,10 @@ impl BwocMcp {
         self.json_owned(args).await
     }
 
-    #[tool(description = "Claim a pending, unblocked task as an agent. Requires --allow-write.")]
+    #[tool(
+        description = "Claim a pending, unblocked task as an agent. Requires --allow-write.",
+        annotations(read_only_hint = false)
+    )]
     async fn bwoc_task_claim(
         &self,
         Parameters(TaskClaimArgs { team, task, agent }): Parameters<TaskClaimArgs>,
@@ -257,7 +305,10 @@ impl BwocMcp {
             .await
     }
 
-    #[tool(description = "Complete an in-progress task you claimed. Requires --allow-write.")]
+    #[tool(
+        description = "Complete an in-progress task you claimed. Requires --allow-write.",
+        annotations(read_only_hint = false)
+    )]
     async fn bwoc_task_complete(
         &self,
         Parameters(TaskClaimArgs { team, task, agent }): Parameters<TaskClaimArgs>,
@@ -267,7 +318,10 @@ impl BwocMcp {
             .await
     }
 
-    #[tool(description = "Create a team with a member list. Requires --allow-write.")]
+    #[tool(
+        description = "Create a team with a member list. Requires --allow-write.",
+        annotations(read_only_hint = false)
+    )]
     async fn bwoc_team_create(
         &self,
         Parameters(TeamCreateArgs { team, members }): Parameters<TeamCreateArgs>,
@@ -277,7 +331,10 @@ impl BwocMcp {
             .await
     }
 
-    #[tool(description = "Write a workspace memory entry. Requires --allow-write.")]
+    #[tool(
+        description = "Write a workspace memory entry. Requires --allow-write.",
+        annotations(read_only_hint = false)
+    )]
     async fn bwoc_memory_put(
         &self,
         Parameters(MemoryPutArgs { name, content }): Parameters<MemoryPutArgs>,
@@ -289,7 +346,8 @@ impl BwocMcp {
     // ====================== EXEC (--allow-exec) ======================
 
     #[tool(
-        description = "Run a single task non-interactively as an agent and return the result. Requires --allow-exec."
+        description = "Run a single task non-interactively as an agent and return the result. Requires --allow-exec.",
+        annotations(read_only_hint = false, open_world_hint = true)
     )]
     async fn bwoc_run(
         &self,
@@ -302,7 +360,10 @@ impl BwocMcp {
 
     // ====================== DANGEROUS (--allow-dangerous) ======================
 
-    #[tool(description = "Incarnate a new agent from the template. Requires --allow-dangerous.")]
+    #[tool(
+        description = "Incarnate a new agent from the template. Requires --allow-dangerous.",
+        annotations(read_only_hint = false, destructive_hint = true)
+    )]
     async fn bwoc_new(
         &self,
         Parameters(NameArg { name }): Parameters<NameArg>,
@@ -312,7 +373,8 @@ impl BwocMcp {
     }
 
     #[tool(
-        description = "Retire an agent (remove from registry + files). Requires --allow-dangerous."
+        description = "Retire an agent (remove from registry + files). Requires --allow-dangerous.",
+        annotations(read_only_hint = false, destructive_hint = true)
     )]
     async fn bwoc_retire(
         &self,
@@ -323,7 +385,10 @@ impl BwocMcp {
         self.json_tool(&["retire", &name, "--yes"]).await
     }
 
-    #[tool(description = "Reactivate a stopped agent. Requires --allow-dangerous.")]
+    #[tool(
+        description = "Reactivate a stopped agent. Requires --allow-dangerous.",
+        annotations(read_only_hint = false, destructive_hint = true)
+    )]
     async fn bwoc_start(
         &self,
         Parameters(NameArg { name }): Parameters<NameArg>,
@@ -332,7 +397,10 @@ impl BwocMcp {
         self.json_tool(&["start", &name, "--yes"]).await
     }
 
-    #[tool(description = "Pause an agent (status = stopped). Requires --allow-dangerous.")]
+    #[tool(
+        description = "Pause an agent (status = stopped). Requires --allow-dangerous.",
+        annotations(read_only_hint = false, destructive_hint = true)
+    )]
     async fn bwoc_stop(
         &self,
         Parameters(NameArg { name }): Parameters<NameArg>,
