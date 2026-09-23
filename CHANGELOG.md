@@ -4,6 +4,12 @@ All notable changes to `bwoc-mcp` are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **`bwoc_fleet` and `bwoc://fleet` work on bwoc 3.x.** Both ran `bwoc fleet --json`; bare `bwoc fleet` is now the status overview and takes no `--json`, so the call failed. They now run `bwoc fleet health --json` — the seven governance signals their description promises.
+
 ## [1.1.0] - 2026-06-23
 
 ### Added
