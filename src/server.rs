@@ -176,7 +176,7 @@ impl BwocMcp {
         annotations(read_only_hint = true)
     )]
     async fn bwoc_fleet(&self) -> Result<CallToolResult, McpError> {
-        self.json_tool(&["fleet"]).await
+        self.json_tool(&["fleet", "health"]).await
     }
 
     #[tool(
@@ -506,7 +506,7 @@ impl ServerHandler for BwocMcp {
     ) -> Result<ReadResourceResult, McpError> {
         let args: &[&str] = match request.uri.as_str() {
             "bwoc://agents" => &["list"],
-            "bwoc://fleet" => &["fleet"],
+            "bwoc://fleet" => &["fleet", "health"],
             "bwoc://info" => &["info"],
             other => {
                 return Err(McpError::resource_not_found(
