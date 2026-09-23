@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   pull_request:
+  # Nightly, so a new bwoc release that breaks a tool's argv is caught even
+  # when nothing changes here (the cli-contract job checks the latest release).
+  schedule:
+    - cron: "17 3 * * *"
 
 # Cancel superseded runs on the same ref.
 concurrency:
@@ -49,3 +53,23 @@ jobs:
         # Behavioural tests are unix-only (POSIX stub); on Windows this still
         # compiles the test crate and runs zero cases.
         run: cargo test --all-features --verbose
+
+  cli-contract:
+    name: CLI contract (latest bwoc release)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: install the latest bwoc release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download -R bemindlabs/BWOC-Framework \
+            --pattern '*-x86_64-unknown-linux-gnu.tar.gz' --dir "$RUNNER_TEMP"
+          tar -xzf "$RUNNER_TEMP"/bwoc-*.tar.gz -C "$RUNNER_TEMP"
+          bin="$(ls -d "$RUNNER_TEMP"/bwoc-*-x86_64-unknown-linux-gnu)/bwoc"
+          "$bin" --version
+          echo "BWOC_CONTRACT_BIN=$bin" >> "$GITHUB_ENV"
+      - name: every tool and resource builds an argv the CLI accepts
+        run: cargo test --test cli_contract -- --nocapture
