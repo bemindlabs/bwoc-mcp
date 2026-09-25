@@ -6,6 +6,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-09-25
+
 ### Added
 
 - **CLI contract test against a real `bwoc`.** `tests/cli_contract.rs` calls every tool and resource through the server with a stub that forwards each argv to the real CLI plus `--help` — clap rejects an unknown subcommand or flag, but nothing runs. CI installs the latest bwoc release for it and runs nightly, so a bwoc release that breaks a tool surfaces here. Skipped locally unless `BWOC_CONTRACT_BIN` is set.
@@ -13,6 +15,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - **`bwoc_fleet` and `bwoc://fleet` work on bwoc 3.x.** Both ran `bwoc fleet --json`; bare `bwoc fleet` is now the status overview and takes no `--json`, so the call failed. They now run `bwoc fleet health --json` — the seven governance signals their description promises.
+
+## [1.1.1] - 2026-07-27
+
+Docs-only retag of 1.1.0 (release retro note, README). The binary still reported `1.1.0` and the `.mcpb` manifest `1.0.1`; 1.1.2 brings all three version strings back in line.
 
 ## [1.1.0] - 2026-06-23
 
