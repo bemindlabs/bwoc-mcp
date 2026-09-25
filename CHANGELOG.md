@@ -73,6 +73,8 @@ workspace to any MCP client.
 - team/task tools route through shell-out (`bwoc task … --json`) by design, to
   keep this public adapter decoupled from the framework's on-disk layout.
 
+[1.1.2]: https://github.com/bemindlabs/bwoc-mcp/releases/tag/v1.1.2
+[1.1.1]: https://github.com/bemindlabs/bwoc-mcp/releases/tag/v1.1.1
 [1.1.0]: https://github.com/bemindlabs/bwoc-mcp/releases/tag/v1.1.0
 [1.0.1]: https://github.com/bemindlabs/bwoc-mcp/releases/tag/v1.0.1
 [1.0.0]: https://github.com/bemindlabs/bwoc-mcp/releases/tag/v1.0.0
