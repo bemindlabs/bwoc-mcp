@@ -31,7 +31,7 @@ rmcp = { version = "1.7", features = ["server", "macros", "transport-io"] }
 # clone) — NOT a sibling path dep, which only resolves on a dev box that also
 # checked out the framework. To develop against a local framework working tree,
 # add a [patch] override (see the commented block at the bottom of this file).
-bwoc-core = { git = "https://github.com/bemindlabs/BWOC-Framework.git", tag = "v2026.6.9-0" }
+bwoc-core = { git = "https://github.com/bemindlabs/BWOC-Framework.git", tag = "v2026.9.25-1" }
 
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "process", "io-std", "signal"] }
 serde = { version = "1", features = ["derive"] }

@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- **`bwoc-core` pinned to the bwoc 3.x line (`v2026.9.25-1`, 3.11.0)** instead of `v2026.6.9-0` from 2.x. The only in-process use, the `parse_team_tasks` seam, reads 3.x task lines correctly on either pin today, so nothing changes at runtime. A new test with a task line written by bwoc 3.11 keeps the pin honest from here on.
+
 ## [1.1.2] - 2026-09-25
 
 ### Added
