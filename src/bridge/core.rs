@@ -38,3 +38,20 @@ impl Bridge {
         Ok(serde_json::to_value(tasks)?)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// A task line exactly as bwoc 3.11 writes it (`bwoc task add` on a
+    /// plan-gated team) — the pinned bwoc-core must read the 3.x schema.
+    #[test]
+    fn parses_a_task_line_written_by_bwoc_3x() {
+        let line = r#"{"id":"t1","title":"check the 3.x schema","state":"pending","created_at":"2026-09-26T04:19:36Z","requires_plan":true}"#;
+        let bridge = Bridge::new(std::path::PathBuf::from("."), "bwoc".into());
+        let v = bridge.parse_team_tasks(line).unwrap();
+        assert_eq!(v[0]["id"], "t1");
+        assert_eq!(v[0]["state"], "pending");
+        assert_eq!(v[0]["requires_plan"], true);
+    }
+}
