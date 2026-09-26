@@ -23,7 +23,7 @@ http = ["rmcp/transport-streamable-http-server", "rmcp/auth", "dep:axum", "dep:t
 # Official Rust MCP SDK. This repo is OUTSIDE the bwoc-framework workspace, so
 # the framework's dep-quarantine (bwoc-core stays dependency-light) does not
 # bind here — rmcp/tokio/axum live only in this adapter.
-rmcp = { version = "1.7", features = ["server", "macros", "transport-io"] }
+rmcp = { version = "3.4", features = ["server", "macros", "transport-io"] }
 
 # Hybrid bridge — link bwoc-core for the primitives it already exposes
 # (manifest, workspace registry, team/task TOML, routing/inbox, deep_memory).
