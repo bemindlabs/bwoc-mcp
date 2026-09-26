@@ -6,6 +6,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-09-26
+
 ### Security
 
 - **`rmcp` 1.7 → 3.4.** Clears three advisories against the MCP SDK: an unauthenticated, permanent session-table leak in the Streamable HTTP server (high), missing resource-field validation in OAuth protected-resource metadata discovery (high), and custom HTTP headers leaking to cross-origin redirect targets (medium). The HTTP ones matter to anyone serving `--transport http`. The code changes are the SDK's renames (`ContentBlock`, `Resource`, `Role`, `ServerConfig`, the `*Response` results); the tools, resources and prompts on the wire are unchanged, and older clients still negotiate `2025-06-18`.
@@ -82,6 +84,7 @@ workspace to any MCP client.
 - team/task tools route through shell-out (`bwoc task … --json`) by design, to
   keep this public adapter decoupled from the framework's on-disk layout.
 
+[1.2.0]: https://github.com/bemindlabs/bwoc-mcp/releases/tag/v1.2.0
 [1.1.2]: https://github.com/bemindlabs/bwoc-mcp/releases/tag/v1.1.2
 [1.1.1]: https://github.com/bemindlabs/bwoc-mcp/releases/tag/v1.1.1
 [1.1.0]: https://github.com/bemindlabs/bwoc-mcp/releases/tag/v1.1.0
