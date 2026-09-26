@@ -9,6 +9,10 @@ on:
   schedule:
     - cron: "17 3 * * *"
 
+# Least privilege: every job only reads the repo (and public release assets).
+permissions:
+  contents: read
+
 # Cancel superseded runs on the same ref.
 concurrency:
   group: ci-${{ github.ref }}

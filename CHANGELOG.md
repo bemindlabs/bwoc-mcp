@@ -6,6 +6,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Security
+
+- **`rmcp` 1.7 → 3.4.** Clears three advisories against the MCP SDK: an unauthenticated, permanent session-table leak in the Streamable HTTP server (high), missing resource-field validation in OAuth protected-resource metadata discovery (high), and custom HTTP headers leaking to cross-origin redirect targets (medium). The HTTP ones matter to anyone serving `--transport http`. The code changes are the SDK's renames (`ContentBlock`, `Resource`, `Role`, `ServerConfig`, the `*Response` results); the tools, resources and prompts on the wire are unchanged, and older clients still negotiate `2025-06-18`.
+- CI declares `permissions: contents: read` (code-scanning `actions/missing-workflow-permissions` ×3).
+
 ### Changed
 
 - **`bwoc-core` pinned to the bwoc 3.x line (`v2026.9.25-1`, 3.11.0)** instead of `v2026.6.9-0` from 2.x. The only in-process use, the `parse_team_tasks` seam, reads 3.x task lines correctly on either pin today, so nothing changes at runtime. A new test with a task line written by bwoc 3.11 keeps the pin honest from here on.

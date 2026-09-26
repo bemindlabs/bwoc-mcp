@@ -138,7 +138,7 @@ impl BwocMcp {
         annotations(read_only_hint = true)
     )]
     async fn bwoc_ping(&self) -> Result<CallToolResult, McpError> {
-        Ok(CallToolResult::success(vec![Content::text(format!(
+        Ok(CallToolResult::success(vec![ContentBlock::text(format!(
             "pong: {}",
             self.bridge.workspace.display()
         ))]))
@@ -413,7 +413,7 @@ impl BwocMcp {
 
     async fn json_tool(&self, args: &[&str]) -> Result<CallToolResult, McpError> {
         match self.bridge.json(args).await {
-            Ok(v) => Ok(CallToolResult::success(vec![Content::text(
+            Ok(v) => Ok(CallToolResult::success(vec![ContentBlock::text(
                 serde_json::to_string_pretty(&v).unwrap_or_else(|_| v.to_string()),
             )])),
             Err(e) => Err(McpError::internal_error(e.to_string(), None)),
@@ -427,7 +427,7 @@ impl BwocMcp {
 
     async fn text_tool(&self, args: &[&str]) -> Result<CallToolResult, McpError> {
         match self.bridge.text(args).await {
-            Ok(s) => Ok(CallToolResult::success(vec![Content::text(s)])),
+            Ok(s) => Ok(CallToolResult::success(vec![ContentBlock::text(s)])),
             Err(e) => Err(McpError::internal_error(e.to_string(), None)),
         }
     }
@@ -455,10 +455,10 @@ impl BwocMcp {
 
 #[tool_handler]
 impl ServerHandler for BwocMcp {
-    fn get_info(&self) -> ServerInfo {
-        // ServerInfo is #[non_exhaustive] — mutate a Default rather than use a
+    fn get_info(&self) -> ServerConfig {
+        // ServerConfig is #[non_exhaustive] — mutate a Default rather than use a
         // struct literal.
-        let mut info = ServerInfo::default();
+        let mut info = ServerConfig::default();
         info.instructions = Some(
             "BWOC workspace control surface. Read tools (list, status, info, fleet, sessions, \
              trust, team/task lists, inbox, memory, peer) are always available; send/run, task \
@@ -488,22 +488,18 @@ impl ServerHandler for BwocMcp {
         _ctx: RequestContext<RoleServer>,
     ) -> Result<ListResourcesResult, McpError> {
         let resources = vec![
-            RawResource::new("bwoc://agents", "agents").no_annotation(),
-            RawResource::new("bwoc://fleet", "fleet").no_annotation(),
-            RawResource::new("bwoc://info", "info").no_annotation(),
+            Resource::new("bwoc://agents", "agents"),
+            Resource::new("bwoc://fleet", "fleet"),
+            Resource::new("bwoc://info", "info"),
         ];
-        Ok(ListResourcesResult {
-            resources,
-            next_cursor: None,
-            meta: None,
-        })
+        Ok(ListResourcesResult::with_all_items(resources))
     }
 
     async fn read_resource(
         &self,
         request: ReadResourceRequestParams,
         _ctx: RequestContext<RoleServer>,
-    ) -> Result<ReadResourceResult, McpError> {
+    ) -> Result<ReadResourceResponse, McpError> {
         let args: &[&str] = match request.uri.as_str() {
             "bwoc://agents" => &["list"],
             "bwoc://fleet" => &["fleet", "health"],
@@ -521,10 +517,7 @@ impl ServerHandler for BwocMcp {
             .await
             .map_err(|e| McpError::internal_error(e.to_string(), None))?;
         let text = serde_json::to_string_pretty(&value).unwrap_or_else(|_| value.to_string());
-        Ok(ReadResourceResult::new(vec![ResourceContents::text(
-            text,
-            request.uri,
-        )]))
+        Ok(ReadResourceResult::new(vec![ResourceContents::text(text, request.uri)]).into())
     }
 
     // ---- prompts: reusable BWOC workflow templates -----------------------
@@ -553,18 +546,14 @@ impl ServerHandler for BwocMcp {
                 None,
             ),
         ];
-        Ok(ListPromptsResult {
-            prompts,
-            next_cursor: None,
-            meta: None,
-        })
+        Ok(ListPromptsResult::with_all_items(prompts))
     }
 
     async fn get_prompt(
         &self,
         request: GetPromptRequestParams,
         _ctx: RequestContext<RoleServer>,
-    ) -> Result<GetPromptResult, McpError> {
+    ) -> Result<GetPromptResponse, McpError> {
         let args = request.arguments.unwrap_or_default();
         let messages = match request.name.as_str() {
             "delegate" => {
@@ -577,7 +566,7 @@ impl ServerHandler for BwocMcp {
                     .and_then(|v| v.as_str())
                     .unwrap_or("<task>");
                 vec![PromptMessage::new_text(
-                    PromptMessageRole::User,
+                    Role::User,
                     format!(
                         "Delegate this task to BWOC agent `{agent}` by calling the `bwoc_run` \
                          tool (agent=\"{agent}\", task=\"{task}\"), then summarize the result.",
@@ -585,7 +574,7 @@ impl ServerHandler for BwocMcp {
                 )]
             }
             "fleet_review" => vec![PromptMessage::new_text(
-                PromptMessageRole::User,
+                Role::User,
                 "Call `bwoc_fleet`, then summarize the fleet's health signals and flag any \
                  agent that is failing an Aparihāniya-dhamma signal."
                     .to_string(),
@@ -597,6 +586,6 @@ impl ServerHandler for BwocMcp {
                 ));
             }
         };
-        Ok(GetPromptResult::new(messages))
+        Ok(GetPromptResult::new(messages).into())
     }
 }
