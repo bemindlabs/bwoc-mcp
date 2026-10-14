@@ -100,7 +100,7 @@ bwoc-mcp --transport http --http-addr 127.0.0.1:8765 --http-token "$BWOC_MCP_TOK
 
 ## Status
 
-**v1.2.0.** Both transports (**stdio** + **Streamable HTTP** with bearer auth),
+**v1.2.1.** Both transports (**stdio** + **Streamable HTTP** with bearer auth),
 the **full 24-tool catalog** (read open; write / exec / lifecycle gated), and
 MCP **resources** (`bwoc://agents|fleet|info`) + **prompts** (`delegate`,
 `fleet_review`) are shipped and tested (clippy clean), and a nightly CLI
