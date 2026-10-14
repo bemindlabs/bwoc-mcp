@@ -38,8 +38,11 @@ if command -v mcpb >/dev/null 2>&1; then
   mcpb validate "$root/mcpb/manifest.json"
   mcpb pack "$root/mcpb" "$root/bwoc-mcp.mcpb"
 elif command -v npx >/dev/null 2>&1; then
-  npx -y @anthropic-ai/mcpb@latest validate "$root/mcpb/manifest.json"
-  npx -y @anthropic-ai/mcpb@latest pack "$root/mcpb" "$root/bwoc-mcp.mcpb"
+  npx -y @anthropic-ai/mcpb@2.1.2 validate "$root/mcpb/manifest.json"
+  npx -y @anthropic-ai/mcpb@2.1.2 pack "$root/mcpb" "$root/bwoc-mcp.mcpb"
+elif ! command -v zip >/dev/null 2>&1; then
+  echo "error: need one of mcpb, npx (for @anthropic-ai/mcpb) or zip to pack the bundle" >&2
+  exit 1
 else
   # Fallback: an .mcpb is a plain zip with manifest.json at the archive root.
   echo "▸ @anthropic-ai/mcpb not found — packing with zip (install it for validation + signing)"

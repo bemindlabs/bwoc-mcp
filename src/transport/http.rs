@@ -36,6 +36,7 @@ pub async fn serve(args: Cli, bridge: Bridge, posture: Posture) -> anyhow::Resul
         Default::default(),
     );
 
+    let authed = token.is_some();
     let app = axum::Router::new()
         .nest_service("/mcp", mcp)
         .layer(axum::middleware::from_fn(
@@ -43,17 +44,22 @@ pub async fn serve(args: Cli, bridge: Bridge, posture: Posture) -> anyhow::Resul
                 let token = token.clone();
                 async move { auth_gate(token, headers, req, next).await }
             },
-        ))
-        // Normalize Host → localhost so rmcp's DNS-rebinding guard accepts requests
-        // when bound to a docker-bridge IP (e.g. 172.17.0.1) for container access.
-        // Safe here: the real auth is the bearer token above + a non-LAN bind.
-        .layer(axum::middleware::from_fn(
+        ));
+    // Normalize Host → localhost so rmcp's DNS-rebinding guard accepts requests
+    // when bound to a docker-bridge IP (e.g. 172.17.0.1) for container access.
+    // Only with a bearer token: that is the real auth then. In --http-insecure
+    // mode the guard is the only protection, so it stays in force.
+    let app = if authed {
+        app.layer(axum::middleware::from_fn(
             |mut req: axum::extract::Request, next: axum::middleware::Next| async move {
                 req.headers_mut()
                     .insert(HOST, HeaderValue::from_static("localhost"));
                 next.run(req).await
             },
-        ));
+        ))
+    } else {
+        app
+    };
 
     let listener = tokio::net::TcpListener::bind(&args.http_addr).await?;
     tracing::info!(addr = %args.http_addr, "bwoc-mcp HTTP listening on /mcp");

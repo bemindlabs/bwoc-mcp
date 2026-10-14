@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Security
+
+- **`--http-insecure` keeps rmcp's DNS-rebinding guard.** The `Host` → `localhost` rewrite (for docker-bridge binds) now applies only when a bearer token is set; without one the guard is the only protection, so it stays in force.
+
 ## [1.2.0] - 2026-09-26
 
 ### Security
@@ -84,6 +88,7 @@ workspace to any MCP client.
 - team/task tools route through shell-out (`bwoc task … --json`) by design, to
   keep this public adapter decoupled from the framework's on-disk layout.
 
+[Unreleased]: https://github.com/bemindlabs/bwoc-mcp/compare/v1.2.0...HEAD
 [1.2.0]: https://github.com/bemindlabs/bwoc-mcp/releases/tag/v1.2.0
 [1.1.2]: https://github.com/bemindlabs/bwoc-mcp/releases/tag/v1.1.2
 [1.1.1]: https://github.com/bemindlabs/bwoc-mcp/releases/tag/v1.1.1
