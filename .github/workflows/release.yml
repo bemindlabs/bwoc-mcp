@@ -100,8 +100,9 @@ jobs:
           cp artifacts/bin-x86_64-pc-windows-msvc/bwoc-mcp.exe mcpb/server/bwoc-mcp-win32.exe
       - name: Validate + pack
         run: |
-          npx -y @anthropic-ai/mcpb@latest validate mcpb/manifest.json
-          npx -y @anthropic-ai/mcpb@latest pack mcpb bwoc-mcp.mcpb
+          # Pinned: a tagged release must not change with upstream; bump on purpose.
+          npx -y @anthropic-ai/mcpb@2.1.2 validate mcpb/manifest.json
+          npx -y @anthropic-ai/mcpb@2.1.2 pack mcpb bwoc-mcp.mcpb
       - name: Attach .mcpb to release
         uses: softprops/action-gh-release@v2
         with:

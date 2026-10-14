@@ -47,10 +47,11 @@ for the full catalog and security posture.
 # e.g. Apple Silicon — pick your target from the release page
 gh release download --repo bemindlabs/bwoc-mcp --pattern 'bwoc-mcp-aarch64-apple-darwin.tar.gz'
 gh release view --repo bemindlabs/bwoc-mcp --json assets \
-  -q '.assets[] | select(.name=="bwoc-mcp-aarch64-apple-darwin.tar.gz") | .digest'   # compare with:
-shasum -a 256 bwoc-mcp-aarch64-apple-darwin.tar.gz
+  -q '.assets[] | select(.name=="bwoc-mcp-aarch64-apple-darwin.tar.gz") | .digest | ltrimstr("sha256:")'   # compare with:
+shasum -a 256 bwoc-mcp-aarch64-apple-darwin.tar.gz | cut -d' ' -f1
+mkdir -p ~/.local/bin
 tar xzf bwoc-mcp-aarch64-apple-darwin.tar.gz && install -m 755 bwoc-mcp ~/.local/bin/
-bwoc-mcp --version
+~/.local/bin/bwoc-mcp --version
 ```
 
 **Claude Code:** `claude mcp add --scope user bwoc -- ~/.local/bin/bwoc-mcp --workspace /abs/path/to/workspace`, then `claude mcp get bwoc` should show ✔ Connected.

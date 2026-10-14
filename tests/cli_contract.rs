@@ -94,7 +94,11 @@ fn failure(reply: &Value) -> Option<String> {
         return Some(e["message"].as_str().unwrap_or("error").to_string());
     }
     if reply["result"]["isError"] == json!(true) {
-        return Some(reply["result"]["content"][0]["text"].to_string());
+        let text = &reply["result"]["content"][0]["text"];
+        return Some(
+            text.as_str()
+                .map_or_else(|| text.to_string(), str::to_string),
+        );
     }
     None
 }
